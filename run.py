@@ -99,9 +99,9 @@ def get_replicas(path: str, benchmark: str):
                     id=fields[0],
                     hostname=fields[1],
                     port=fields[2],
-                    dbname='tpchdb' if benchmark == 'h' else 'tpcdsdb',
-                    user=fields[3],
-                    password=fields[4]
+                    dbname=fields[3],
+                    user=fields[4],
+                    password=fields[5]
                 )
             )
     return replicas
