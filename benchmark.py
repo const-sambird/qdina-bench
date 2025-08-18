@@ -31,7 +31,7 @@ class Benchmark:
 
         indexes_created = 0
 
-        for i_rep, config in enumerate(self.indexes):
+        for i_rep, config in enumerate(self.config):
             cur = self.cursors[i_rep]
             for index in config:
                 indexes_created += 1
