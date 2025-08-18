@@ -166,7 +166,7 @@ class TPCDSGenerator(Generator):
         logging.info('reading queries')
         queries = []
 
-        for i in range(1, 23):
+        for i in range(1, 99 + 1):
             with open(f'{self.data_path}/queries/{i}.sql', 'r') as infile:
                 queries.append(infile.read())
         
