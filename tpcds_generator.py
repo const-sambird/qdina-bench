@@ -117,8 +117,10 @@ class TPCDSGenerator(Generator):
                 subprocess.run([f'{self.dbgen_path}/dsqgen',
                                 '-SCALE', self.scale_factor,
                                 '-RNGSEED', rng_seed,
-                                '-TEMPLATE', str(i),
-                                '-DIALECT', 'netezza'],
+                                '-TEMPLATE', f'query{i + 1}.tpl',
+                                '-DIALECT', 'netezza',
+                                '-DIRECTORY', os.path.normpath(os.path.join(self.dbgen_path, '..', 'query_templates')),
+                                '-FILTER', 'Y'],
                                cwd=self.dbgen_path,
                                stdout=outfile)
     
