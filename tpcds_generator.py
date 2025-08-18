@@ -107,7 +107,7 @@ class TPCDSGenerator(Generator):
                         ], cwd=self.dbgen_path)
 
         shutil.copy(f'{self.dbgen_path}/tpcds.sql', f'{self.data_path}/schema/dss.ddl')
-        shutil.copy(f'{self.root_dir}/tpcds_ri.sql', f'{self.data_path}/schema/schema_keys.sql')
+        shutil.copy(f'{self.dbgen_path}/tpcds_ri.sql', f'{self.data_path}/schema/schema_keys.sql')
 
     def _create_queries(self, rng_seed: str):
         logging.debug(f'creating TPC-DS query data')
