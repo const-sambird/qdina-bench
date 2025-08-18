@@ -175,7 +175,7 @@ if __name__ == '__main__':
     base = os.path.dirname(os.path.realpath(__file__))
     data_dir = os.path.join(base, args.data_dir)
     data_dir = os.path.normpath(data_dir)
-    dbgen_dir = os.path.join(base, args.dbgen_dir)
+    dbgen_dir = os.path.join(base, DBGEN_DIR)
     dbgen_dir = os.path.normpath(dbgen_dir)
 
     if args.benchmark == 'h':
