@@ -18,7 +18,6 @@ def create_arguments():
     parser.add_argument('-i', '--index-config', type=str, default='config.csv', help='the path to the index configuration')
     parser.add_argument('-t', '--routing-table', type=str, default='routes.csv', help='the path to the routing table')
     parser.add_argument('-p', '--partial-templates', type=str, default='partial.csv', help='the templates used in the training partition (can be empty/nonexistent)')
-    parser.add_argument('-x', '--shuffle', action='store_true', help='shuffle the order in which queries are executed')
     parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose log output')
     parser.add_argument('-c', '--copy-test-set', action='store_true', help='use pregenerated queries from an existing test set instead of generated queries')
     parser.add_argument('--copy-source', type=str, default='/proj/qdina-PG0/dina-set/h/train', help='where the test set is stored')
@@ -209,7 +208,7 @@ if __name__ == '__main__':
             queries, templates = generator.read_data()
         benchmark = Benchmark(queries, templates, replicas, routes, config)
 
-        total, times = benchmark.run(args.shuffle)
+        total, times = benchmark.run()
 
         partial = 0
         for i in partial_temps:
