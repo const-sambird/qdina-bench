@@ -20,7 +20,7 @@ def create_arguments():
     parser.add_argument('-p', '--partial-templates', type=str, default='partial.csv', help='the templates used in the training partition (can be empty/nonexistent)')
     parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose log output')
     parser.add_argument('-c', '--copy-test-set', action='store_true', help='use pregenerated queries from an existing test set instead of generated queries')
-    parser.add_argument('--copy-source', type=str, default='/proj/qdina-PG0/dina-set/h/train', help='where the test set is stored')
+    parser.add_argument('--copy-source', type=str, default='/proj/qdina-PG0/dina-set/h/test', help='where the test set is stored')
     
     parser.add_argument('benchmark', choices=['h', 'ds'], help='which TPC benchmark should be run? TPC-[H] or TPC-[DS]?')
     parser.add_argument('phase', choices=['generate', 'load', 'run', 'all'], nargs='+', help='which phases of the benchmark should be run? if all is present, run all.')
