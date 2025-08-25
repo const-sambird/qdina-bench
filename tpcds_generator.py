@@ -79,11 +79,12 @@ class TPCDSGenerator(Generator):
         for c in connections:
             c.close()
 
-    def read_data(self) -> list[str]:
+    def read_data(self) -> tuple[list[str], list[int]]:
         '''
         Loads the queries into memory.
 
         :returns queries: the 99 generated queries to be executed according to the stream order given in the specification
+        :returns templates: the template number of each query
         '''
         return self._load_queries()
     
@@ -162,12 +163,13 @@ class TPCDSGenerator(Generator):
                             while data := input.read(TABLE_BLOCK_SIZE):
                                 copy.write(data)
 
-    def _load_queries(self) -> list[str]:
+    def _load_queries(self) -> tuple[list[str], list[int]]:
         logging.info('reading queries')
         queries = []
+        templates = list(range(99))
 
         for i in range(1, 99 + 1):
             with open(f'{self.data_path}/queries/{i}.sql', 'r') as infile:
                 queries.append(infile.read())
         
-        return queries
+        return queries, templates

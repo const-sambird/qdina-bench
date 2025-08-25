@@ -6,6 +6,7 @@ from benchmark import Benchmark
 from replica import Replica
 from tpch_generator import TPCHGenerator
 from tpcds_generator import TPCDSGenerator
+from query_loader import load_test_set_queries
 
 def create_arguments():
     parser = argparse.ArgumentParser()
@@ -19,9 +20,11 @@ def create_arguments():
     parser.add_argument('-p', '--partial-templates', type=str, default='partial.csv', help='the templates used in the training partition (can be empty/nonexistent)')
     parser.add_argument('-x', '--shuffle', action='store_true', help='shuffle the order in which queries are executed')
     parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose log output')
+    parser.add_argument('-c', '--copy-test-set', action='store_true', help='use pregenerated queries from an existing test set instead of generated queries')
+    parser.add_argument('--copy-source', type=str, default='/proj/qdina-PG0/dina-set/h/train', help='where the test set is stored')
     
     parser.add_argument('benchmark', choices=['h', 'ds'], help='which TPC benchmark should be run? TPC-[H] or TPC-[DS]?')
-    parser.add_argument('phase', choices=['generate', 'load', 'run', 'all'], nargs='+', help='which phases of the benchmark should be run? if all is present, run all.')
+    parser.add_argument('phase', choices=['generate', 'copy', 'load', 'run', 'all'], nargs='+', help='which phases of the benchmark should be run? if all is present, run all.')
 
     return parser.parse_args()
 
@@ -157,6 +160,8 @@ if __name__ == '__main__':
     
     PHASES_TO_RUN = args.phase
     DBGEN_DIR = args.dbgen_dir
+    COPY_TEST_SET = args.copy_test_set
+    COPY_SOURCE = args.copy_source
 
     if 'all' in args.phase:
         PHASES_TO_RUN = ['generate', 'load', 'run']
@@ -198,8 +203,11 @@ if __name__ == '__main__':
         logging.info(f'skipping TPC-{args.benchmark} database load. it must already be present in the database!')
 
     if 'run' in PHASES_TO_RUN:
-        queries = generator.read_data()
-        benchmark = Benchmark(queries, replicas, routes, config)
+        if COPY_TEST_SET:
+            queries, templates = load_test_set_queries(COPY_SOURCE)
+        else:
+            queries, templates = generator.read_data()
+        benchmark = Benchmark(queries, templates, replicas, routes, config)
 
         total, times = benchmark.run(args.shuffle)
 
