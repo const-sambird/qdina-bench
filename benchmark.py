@@ -14,11 +14,12 @@ class Benchmark:
         self.queries = queries
         self.templates = templates
         self.n_queries = len(queries)
+        self.n_templates = len(list(set(templates)))
         self.connections = [Connection(r) for r in replicas]
         self.cursors = [c.conn().cursor() for c in self.connections]
         self.routes = routes
         self.config = config
-        self.times = [0 for _ in range(self.n_queries)]
+        self.times = [0 for _ in range(self.n_templates)]
 
         self._create_indexes()
     
