@@ -20,6 +20,7 @@ class Benchmark:
         self.routes = routes
         self.config = config
         self.times = [0 for _ in range(self.n_templates)]
+        self.order = [i for i in range(self.n_queries)]
 
         self._create_indexes()
     
@@ -45,8 +46,11 @@ class Benchmark:
         :returns total: the sum of the query execution times
         :returns times: how long each query took to execute, in workload (not shuffled) order
         '''
-        for i, query in enumerate(self.queries):
-            template = self.templates[i]
+        random.shuffle(self.order)
+
+        for i, query_num in enumerate(self.order):
+            query = self.queries[query_num]
+            template = self.templates[query_num]
             logging.debug(f'execute {i + 1}/{self.n_queries}: Q{template + 1}')
             replica = self.routes[template]
 
