@@ -18,7 +18,7 @@ def load_test_set_queries(path: str) -> tuple[list[str], list[int]]:
     templates = []
 
     for i, template in enumerate(template_strs):
-        for query_num in query_nums[i]:
+        for query_num in query_nums:
             with open(f'{path}/{template}_{query_num}.sql', 'r') as infile:
                 lines = infile.readlines()
             query = ' '.join(lines[1:])

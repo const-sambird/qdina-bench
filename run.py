@@ -23,7 +23,7 @@ def create_arguments():
     parser.add_argument('--copy-source', type=str, default='/proj/qdina-PG0/dina-set/h/train', help='where the test set is stored')
     
     parser.add_argument('benchmark', choices=['h', 'ds'], help='which TPC benchmark should be run? TPC-[H] or TPC-[DS]?')
-    parser.add_argument('phase', choices=['generate', 'copy', 'load', 'run', 'all'], nargs='+', help='which phases of the benchmark should be run? if all is present, run all.')
+    parser.add_argument('phase', choices=['generate', 'load', 'run', 'all'], nargs='+', help='which phases of the benchmark should be run? if all is present, run all.')
 
     return parser.parse_args()
 
