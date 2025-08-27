@@ -20,6 +20,7 @@ def create_arguments():
     parser.add_argument('-p', '--partial-templates', type=str, default='partial.csv', help='the templates used in the training partition (can be empty/nonexistent)')
     parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose log output')
     parser.add_argument('-c', '--copy-test-set', action='store_true', help='use pregenerated queries from an existing test set instead of generated queries')
+    parser.add_argument('-e', '--rng-seed', type=int, default=None, help='seed to pass to the database generator')
     parser.add_argument('--copy-source', type=str, default='/proj/qdina-PG0/dina-set/h/test', help='where the test set is stored')
     
     parser.add_argument('benchmark', choices=['h', 'ds'], help='which TPC benchmark should be run? TPC-[H] or TPC-[DS]?')
@@ -161,6 +162,7 @@ if __name__ == '__main__':
     DBGEN_DIR = args.dbgen_dir
     COPY_TEST_SET = args.copy_test_set
     COPY_SOURCE = args.copy_source
+    RNG_SEED = args.rng_seed
 
     if 'all' in args.phase:
         PHASES_TO_RUN = ['generate', 'load', 'run']
@@ -191,7 +193,7 @@ if __name__ == '__main__':
 
     if 'generate' in PHASES_TO_RUN:
         logging.info(f'generating TPC-{args.benchmark} data, scale factor {args.scale_factor}')
-        generator.generate()
+        generator.generate(RNG_SEED)
     else:
         logging.info(f'skipping TPC-{args.benchmark} data generation')
 
