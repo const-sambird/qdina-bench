@@ -64,4 +64,15 @@ class Benchmark:
         total = sum(self.times)
         logging.debug(f'all queries completed in {round(total, 2)}s')
 
+        self._destroy_indexes()
+
         return total, self.times
+    
+    def _destroy_indexes(self):
+        indexes_destroyed = 0
+
+        for i_rep, config in enumerate(self.config):
+            cur = self.cursors[i_rep]
+            for index in config:
+                indexes_created += 1
+                cur.execute(f'DROP INDEX idx_{indexes_created}')
