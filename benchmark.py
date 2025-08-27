@@ -5,7 +5,7 @@ import time
 from connection import Connection
 
 class Benchmark:
-    def __init__(self, queries, templates, replicas, routes, config):
+    def __init__(self, queries, templates, replicas, routes, config, create_indexes):
         '''
         Benchmarks the performance of created indexes by finding the execution
         time of every query in the workload. Reports the total execution time
@@ -22,7 +22,10 @@ class Benchmark:
         self.times = [0 for _ in range(self.n_templates)]
         self.order = [i for i in range(self.n_queries)]
 
-        self._create_indexes()
+        if create_indexes:
+            self._create_indexes()
+        else:
+            logging.warning('skipping index creation!')
     
     def _create_indexes(self):
         '''
@@ -63,8 +66,6 @@ class Benchmark:
     
         total = sum(self.times)
         logging.debug(f'all queries completed in {round(total, 2)}s')
-
-        self._destroy_indexes()
 
         return total, self.times
     

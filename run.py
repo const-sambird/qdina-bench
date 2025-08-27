@@ -21,6 +21,7 @@ def create_arguments():
     parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose log output')
     parser.add_argument('-c', '--copy-test-set', action='store_true', help='use pregenerated queries from an existing test set instead of generated queries')
     parser.add_argument('-e', '--rng-seed', type=int, default=None, help='seed to pass to the database generator')
+    parser.add_argument('-n', '--no-create-indexes', action='store_true', help='do not create the indexes (ie, if they are already present)')
     parser.add_argument('--copy-source', type=str, default='/proj/qdina-PG0/dina-set/h/test', help='where the test set is stored')
     
     parser.add_argument('benchmark', choices=['h', 'ds'], help='which TPC benchmark should be run? TPC-[H] or TPC-[DS]?')
@@ -163,6 +164,7 @@ if __name__ == '__main__':
     COPY_TEST_SET = args.copy_test_set
     COPY_SOURCE = args.copy_source
     RNG_SEED = args.rng_seed
+    CREATE_INDEXES = not args.no_create_indexes
 
     if 'all' in args.phase:
         PHASES_TO_RUN = ['generate', 'load', 'run']
@@ -208,7 +210,7 @@ if __name__ == '__main__':
             queries, templates = load_test_set_queries(COPY_SOURCE)
         else:
             queries, templates = generator.read_data()
-        benchmark = Benchmark(queries, templates, replicas, routes, config)
+        benchmark = Benchmark(queries, templates, replicas, routes, config, CREATE_INDEXES)
 
         total, times = benchmark.run()
 
