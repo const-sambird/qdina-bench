@@ -3,6 +3,7 @@ import os
 import subprocess
 import shutil
 import logging
+import random
 
 from replica import Replica
 from connection import Connection
@@ -37,7 +38,7 @@ class TPCHGenerator(Generator):
         self.dbname = replicas[0].dbname
         self.root_dir = os.path.dirname(os.path.realpath(__file__))
     
-    def generate(self):
+    def generate(self, rng_seed: int | None = None):
         '''
         Generates the table, query, and refresh data for the
         TPC-H benchmark, according to the parameters that were
@@ -46,6 +47,10 @@ class TPCHGenerator(Generator):
         Creates the specified data directory (if it does not already exist),
         compiles dbgen (or recompiles it), and generates the data.
         '''
+        if rng_seed == None:
+            rng_seed = random.randrange(1_000_000_000, 9_999_999_999)
+        rng_seed = str(rng_seed)
+
         self._create_directories()
         self._move_query_templates()
         self._compile_dbgen()
