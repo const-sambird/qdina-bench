@@ -74,5 +74,5 @@ class Benchmark:
         for i_rep, config in enumerate(self.config):
             cur = self.cursors[i_rep]
             for index in config:
-                indexes_created += 1
-                cur.execute(f'DROP INDEX idx_{indexes_created}')
+                indexes_destroyed += 1
+                cur.execute(f'DROP INDEX idx_{indexes_destroyed}')
