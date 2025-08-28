@@ -80,9 +80,9 @@ class Benchmark:
 
         for queue in timer_queues:
             info = queue.get()
-            for i, time in enumerate(info['times']):
+            for i, q_time in enumerate(info['times']):
                 template = replica_templates[i]
-                self.times[template] += time
+                self.times[template] += q_time
     
         total = toc - tic
         logging.debug(f'all queries completed in {round(total, 2)}s')
