@@ -78,10 +78,10 @@ class Benchmark:
         [p.join() for p in processes]
         toc = time.time()
 
-        for queue in timer_queues:
+        for replica, queue in enumerate(timer_queues):
             info = queue.get()
             for i, q_time in enumerate(info['times']):
-                template = replica_templates[i]
+                template = replica_templates[replica][i]
                 self.times[template] += q_time
     
         total = toc - tic
