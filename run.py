@@ -22,6 +22,7 @@ def create_arguments():
     parser.add_argument('-c', '--copy-test-set', action='store_true', help='use pregenerated queries from an existing test set instead of generated queries')
     parser.add_argument('-e', '--rng-seed', type=int, default=None, help='seed to pass to the database generator')
     parser.add_argument('-n', '--no-create-indexes', action='store_true', help='do not create the indexes (ie, if they are already present)')
+    parser.add_argument('-x', '--destroy-indexes', action='store_true', help='destroy the indexes after the benchmarking concludes')
     parser.add_argument('--copy-source', type=str, default='/proj/qdina-PG0/dina-set/h/test', help='where the test set is stored')
     
     parser.add_argument('benchmark', choices=['h', 'ds'], help='which TPC benchmark should be run? TPC-[H] or TPC-[DS]?')
@@ -165,6 +166,7 @@ if __name__ == '__main__':
     COPY_SOURCE = args.copy_source
     RNG_SEED = args.rng_seed
     CREATE_INDEXES = not args.no_create_indexes
+    DESTROY_INDEXES = args.destroy_indexes
 
     if 'all' in args.phase:
         PHASES_TO_RUN = ['generate', 'load', 'run']
@@ -217,6 +219,9 @@ if __name__ == '__main__':
         partial = 0
         for i in partial_temps:
             partial += times[i]
+        
+        if DESTROY_INDEXES:
+            benchmark.destroy_indexes()
 
         logging.info('=' * 30)
         logging.info(f'TPC-{args.benchmark} Performance Benchmark Results')
