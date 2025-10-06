@@ -46,7 +46,7 @@ class QuerySet:
                         self.cursor.execute(statement)
                     elif 'select' in statement:
                         self.cursor.execute('EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) %s' % statement)
-                        plan += self.cursor.fetchone()[0][0]
+                        plan += str(self.cursor.fetchone()[0][0])
                 plans.append(plan)
             else:
                 self.cursor.execute(query)
