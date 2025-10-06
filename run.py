@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import shutil
 
 from benchmark import Benchmark
 from replica import Replica
@@ -23,6 +24,7 @@ def create_arguments():
     parser.add_argument('-e', '--rng-seed', type=int, default=None, help='seed to pass to the database generator')
     parser.add_argument('-n', '--no-create-indexes', action='store_true', help='do not create the indexes (ie, if they are already present)')
     parser.add_argument('-x', '--destroy-indexes', action='store_true', help='destroy the indexes after the benchmarking concludes')
+    parser.add_argument('-E', '--explain-query-plans', action='store_true', help='write query plans (EXPLAIN ANALYZE) to disk when running queries')
     parser.add_argument('--copy-source', type=str, default='/proj/qdina-PG0/dina-set/h/test', help='where the test set is stored')
     
     parser.add_argument('benchmark', choices=['h', 'ds'], help='which TPC benchmark should be run? TPC-[H] or TPC-[DS]?')
@@ -167,6 +169,7 @@ if __name__ == '__main__':
     RNG_SEED = args.rng_seed
     CREATE_INDEXES = not args.no_create_indexes
     DESTROY_INDEXES = args.destroy_indexes
+    EXPLAIN_PLANS = args.explain_query_plans
 
     if 'all' in args.phase:
         PHASES_TO_RUN = ['generate', 'load', 'run']
@@ -187,6 +190,8 @@ if __name__ == '__main__':
     data_dir = os.path.normpath(data_dir)
     dbgen_dir = os.path.join(base, DBGEN_DIR)
     dbgen_dir = os.path.normpath(dbgen_dir)
+    plan_dir = os.path.join(base, './plans')
+    plan_dir = os.path.normpath(plan_dir)
 
     if args.benchmark == 'h':
         generator = TPCHGenerator(replicas, dbgen_dir, data_dir, args.scale_factor)
@@ -212,9 +217,9 @@ if __name__ == '__main__':
             queries, templates = load_test_set_queries(COPY_SOURCE)
         else:
             queries, templates = generator.read_data()
-        benchmark = Benchmark(queries, templates, replicas, routes, config, CREATE_INDEXES)
+        benchmark = Benchmark(queries, templates, replicas, routes, config, CREATE_INDEXES, EXPLAIN_PLANS)
 
-        total, times = benchmark.run()
+        total, times, plans = benchmark.run()
 
         partial = 0
         for i in partial_temps:
@@ -235,3 +240,13 @@ if __name__ == '__main__':
         logging.info('')
         logging.info(f'Scale factor: {args.scale_factor}')
         logging.info('=' * 30)
+
+        if EXPLAIN_PLANS:
+            # ensure directory exists
+            os.mkdirs(plan_dir, exist_ok=True)
+
+            for i, plan in enumerate(plans):
+                with open(f'{plan_dir}/explain_{i + 1}.json', 'w') as outfile:
+                    outfile.write(plan)
+            
+            logging.info(f'wrote {len(plans)} EXPLAIN plans to disk')

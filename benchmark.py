@@ -7,7 +7,7 @@ from connection import Connection
 from query_set import QuerySet
 
 class Benchmark:
-    def __init__(self, queries, templates, replicas, routes, config, create_indexes):
+    def __init__(self, queries, templates, replicas, routes, config, create_indexes, explain_plans):
         '''
         Benchmarks the performance of created indexes by finding the execution
         time of every query in the workload. Reports the total execution time
@@ -23,7 +23,9 @@ class Benchmark:
         self.routes = routes
         self.config = config
         self.times = [0 for _ in range(self.n_templates)]
+        self.plans = ['' for _ in range(self.n_templates)]
         self.order = [i for i in range(self.n_queries)]
+        self.explain_plans = explain_plans
 
         if create_indexes:
             self._create_indexes()
@@ -69,7 +71,7 @@ class Benchmark:
         timer_queues = [Queue() for _ in self.replicas]
 
         for i, replica in enumerate(self.replicas):
-            query_sets.append(QuerySet(i, replica_workloads[i], replica_templates[i], replica, timer_queues[i]))
+            query_sets.append(QuerySet(i, replica_workloads[i], replica_templates[i], replica, timer_queues[i], self.explain_plans))
         
         processes = [Process(target=qs.run) for qs in query_sets]
 
@@ -83,11 +85,15 @@ class Benchmark:
             for i, q_time in enumerate(info['times']):
                 template = replica_templates[replica][i]
                 self.times[template] += q_time
+            if self.explain_plans:
+                for i, plan in enumerate(info['plans']):
+                    template = replica_templates[replica][i]
+                    self.plans[template] = plan
     
         total = toc - tic
         logging.debug(f'all queries completed in {round(total, 2)}s')
 
-        return total, self.times
+        return total, self.times, self.plans
     
     def destroy_indexes(self):
         indexes_destroyed = 0
