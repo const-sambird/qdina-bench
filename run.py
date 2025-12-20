@@ -25,7 +25,7 @@ def create_arguments():
     parser.add_argument('-n', '--no-create-indexes', action='store_true', help='do not create the indexes (ie, if they are already present)')
     parser.add_argument('-x', '--destroy-indexes', action='store_true', help='destroy the indexes after the benchmarking concludes')
     parser.add_argument('-E', '--explain-query-plans', action='store_true', help='write query plans (EXPLAIN ANALYZE) to disk when running queries')
-    parser.add_argument('--copy-source', type=str, default='/proj/qdina-PG0/dina-set/h/test', help='where the test set is stored')
+    parser.add_argument('--copy-source', type=str, default='/proj/qdina-PG0/dina-set/h/train', help='where the test set is stored')
     
     parser.add_argument('benchmark', choices=['h', 'ds'], help='which TPC benchmark should be run? TPC-[H] or TPC-[DS]?')
     parser.add_argument('phase', choices=['generate', 'load', 'run', 'all'], nargs='+', help='which phases of the benchmark should be run? if all is present, run all.')
