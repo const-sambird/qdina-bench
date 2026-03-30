@@ -19,9 +19,14 @@ def load_test_set_queries(path: str) -> tuple[list[str], list[int]]:
 
     for i, template in enumerate(template_strs):
         for query_num in query_nums:
-            with open(f'{path}/{template}_{query_num}.sql', 'r') as infile:
-                lines = infile.readlines()
-            query = ' '.join(lines[1:])
+            try:
+                with open(f'{path}/{template}_{query_num}.sql', 'r') as infile:
+                    lines = infile.readlines()
+            except:
+                continue
+            if lines[0].startswith('--'):
+                lines = lines[1:]
+            query = ' '.join(lines)
             query = query.replace('\n', ' ').replace('\t', ' ')
             query = update_query_text(query)
             queries.append(query)

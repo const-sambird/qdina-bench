@@ -95,6 +95,22 @@ def tpcds_table_from_column_prefix(column: str) -> str:
 
     return PREFIXES[prefix]
 
+def tpcc_table_from_column_prefix(column: str) -> str:
+    PREFIXES = {
+        'w': 'WAREHOUSE',
+        'd': 'DISTRICT',
+        'c': 'CUSTOMER',
+        'h': 'HISTORY',
+        'no': 'NEW_ORDER',
+        'o': 'ORDERS',
+        'ol': 'ORDER_LINE',
+        'i': 'ITEM',
+        's': 'STOCK'
+    }
+    prefix = column.split('_')[0]
+
+    return PREFIXES[prefix]
+
 def get_replicas(path: str, benchmark: str):
     replicas = []
     with open(path, 'r') as infile:
@@ -125,8 +141,10 @@ def get_index_config(path: str, num_replicas: int, benchmark: str) -> list[tuple
             to_replica = int(fields[0])
             if benchmark == 'h':
                 table = tpch_table_from_column_prefix(fields[1])
-            else:
+            elif benchmark == 'ds':
                 table = tpcds_table_from_column_prefix(fields[1])
+            elif benchmark == 'c':
+                table = tpcc_table_from_column_prefix(fields[1])
             indexes[to_replica].append([table, fields[1:]])
     
     return indexes
