@@ -64,8 +64,13 @@ class Benchmark:
             template = self.templates[query_num]
             replica = self.routes[template]
 
-            replica_workloads[replica].append(query)
-            replica_templates[replica].append(template)
+            if replica == -1:
+                for i in range(len(self.replicas)):
+                    replica_workloads[i].append(query)
+                    replica_templates[i].append(template)
+            else:
+                replica_workloads[replica].append(query)
+                replica_templates[replica].append(template)
         
         query_sets = []
         timer_queues = [Queue() for _ in self.replicas]
