@@ -31,4 +31,5 @@ if __name__ == '__main__':
         print('*' * 20, 'EVALUATING DESIGN', key, '*' * 20)
         
         with open(f'./design_{key}.log', 'a') as outfile:
-            subprocess.run(['python', 'run.py', *sys.argv[1:], '--index-config', design[0], '--routing-table', design[1]])
+            subprocess.run(['python', 'run.py', *sys.argv[1:], '--index-config', design[0], '--routing-table', design[1]],
+                           stdout=outfile)
