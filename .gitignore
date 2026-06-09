@@ -3,3 +3,6 @@ __pycache__/
 config.csv
 replicas.csv
 routes.csv
+configs/*.csv
+routes/*.csv
+*.log
