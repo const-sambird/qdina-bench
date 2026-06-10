@@ -89,7 +89,7 @@ def tpcds_table_from_column_prefix(column: str) -> str:
         'r': 'REASON',
         'sm': 'SHIP_MODE',
         't': 'TIME_DIM',
-        'dv': 'DSDGEN_VERSION'        
+        'dv': 'DBGEN_VERSION'        
     }
     prefix = column.split('_')[0]
 
